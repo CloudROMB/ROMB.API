@@ -1,0 +1,203 @@
+#!/usr/bin/env node
+const config = require('../config/config');
+const app = require('../app');
+const debug = require('debug')('api:server');
+const colors = require('colors'); // does not alter string prototype
+
+const fs = require('fs');
+
+const forceSsl = require('express-force-ssl');
+const helmet = require('helmet');
+app.use(forceSsl);
+app.use(helmet());
+
+// sudo netstat -ap |grep 8800
+// kill ID
+//  OR
+//  ps ax | grep node
+// killall PIDNAME
+// killall nodemon
+
+
+// DEV OR PROD start mode?
+process.env.NODE_ENV = config.environment.NODE_ENV_DEV;
+
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+const HTTPPort = normalizePort(process.env.PORT || '8800');
+const HTTPSPort = normalizePort(process.env.PORT || '8843');
+// const host = '127.0.0.1';
+const host = '0.0.0.0';
+app.set('host', host);
+app.set('port', HTTPSPort);
+
+/**
+ * Create HTTP server.
+ */
+let http = require('http').createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+http.listen({
+  port: HTTPPort,
+  host: host,
+  exclusive: true
+});
+http.on('error', onError);
+http.on('clientError', onError);
+http.on('listening', onListening);
+
+process.on('exit', (e) => {
+  console.log('exit event', e);
+  const dbClient = app.get('dbClient');
+  if (dbClient) {
+    dbClient.close();
+  }
+
+  if (http) http.close();
+  if (https) https.close();
+
+  http = null;
+  https = null;
+});
+process.on('beforeExit', (e) => {
+  console.log('before exit', e);
+  if (http) http.close();
+  http = null;
+  if (https) https.close();
+  https = null;
+});
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  const port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  console.log(error);
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  const bind = typeof HTTPPort === 'string'
+    ? 'Pipe ' + HTTPPort
+    : 'Port ' + HTTPPort;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      console.error('ERROR:', error);
+      process.exit(1);
+    // throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  const addr = http.address();
+  const bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+  console.log('Listening HTTP on', String(bind).bgWhite.red);
+}
+
+
+// ***
+// USE SSL
+// ***
+let useSSL = false;
+let options = {};
+if (fs.existsSync(config.SSL.fullChain)
+  && fs.existsSync(config.SSL.cert)
+  && fs.existsSync(config.SSL.privateKey)) {
+
+  useSSL = true;
+  options = {
+    cert: fs.readFileSync(config.SSL.fullChain, 'utf8'),
+    key: fs.readFileSync(config.SSL.privateKey, 'utf8'),
+    ca: fs.readFileSync(config.SSL.cert, 'utf8')
+  };
+}
+let https = require('https').createServer(options, app);
+if (useSSL) {
+  // https.listen({
+  //   port: HTTPSPort,
+  //   host: host,
+  //   exclusive: true
+  // });
+  https.listen(HTTPSPort);
+  https.on('error', onSSLError);
+  https.on('clientError', onSSLError);
+  https.on('listening', onSSLListening);
+}
+
+function onSSLError(error) {
+  console.log(error);
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  const bind = typeof HTTPSPort === 'string'
+    ? 'Pipe ' + HTTPSPort
+    : 'Port ' + HTTPSPort;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      console.error('ERROR:', error);
+      process.exit(1);
+    // throw error;
+  }
+}
+
+function onSSLListening() {
+  const addr = https.address();
+  const bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  console.log('Listening SSL on', String(bind).bgWhite.red);
+
+}

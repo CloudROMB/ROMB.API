@@ -1,0 +1,85 @@
+{
+  "environment": {
+    "NODE_ENV_PROD": "production",
+    "NODE_ENV_DEV": "development",
+    "MAX_UPLOAD_SIZE_BYTES": 41943040,
+    "MAX_UPLOAD_SIZE_MB": 40,
+    "MAX_UPLOAD_FILES_COUNT": 12,
+    "MAX_DOC_SIZE_BYTES": 524288,
+    "MAX_DOC_SIZE_KB": 512,
+    "upload_dir": "/romb/data/files/"
+  },
+  "DB-cosmos": {
+    "provider": "mongodb",
+    "host": "documents.azure.com",
+    "port": "10255",
+    "db": "db",
+    "docs": "journal",
+    "systemTypes": "_types",
+    "metadata": "_metadata",
+    "usersCollection": "users",
+    "collection": "users",
+    "username": "prod-db",
+    "password": "***",
+    "role": "dbOwner",
+    "connStr": "prod-db.documents.azure.com:10255/edit?ssl=true",
+    "CLI": "mongo.exe prod-db.documents.azure.com:10255 --ssl --sslAllowInvalidCertificate",
+    "importString": "mongoimport --type TSV --headerline --file 'roles.txt' --collection 'roles' --uri mongodb://11.16.111.212:2727 --drop"
+  },
+  "DBCollections": {
+    "refresh_metadata_every_secs": 600,
+    "maxNameLength": 50,
+    "maxIdLength": 64,
+    "users": "auth, profile info, UX personal settings",
+    "roles": "CRM user roles",
+    "settings": "common CRM settings",
+    "log": "store operation log { capped : true, size : 5242880, max : 10000 }"
+  },
+  "lists": {
+    "recordsOnPage": 10,
+    "maxRecordsOnPage": 100,
+    "maxRecordsInRefList": 100
+  },
+  "references": [
+    {
+      "name": "partners",
+      "path": "partners",
+      "description": "Партнеры сети/магазины"
+    },
+    {
+      "name": "banks-partners",
+      "path": "banks-partners",
+      "description": "Кредитные организации, МФО"
+    },
+    {
+      "name": "customers",
+      "path": "customers",
+      "description": "Покупатели товаров/услуг в кредит"
+    }
+  ],
+  "CRM-roles": {
+    "admin": "Системный администратор",
+    "CEO": "Директор",
+    "CC-specialist": "Сотрудник контактного центра",
+    "CC-manager": "Менеджер контактного центра",
+    "buhgalter": "Сотрудник бухгалтерии",
+    "partners-manager": "Менеджер по работе с партнерами",
+    "sales-specialist": "Специалист отдела продаж",
+    "sales-manager": "Менеджер отдела продаж",
+    "partner-employee": "Сотрудник/специалист партнера",
+    "partner-manager": "Ответственный сотрудник/руководитель партнера",
+    "bank-employee": "Сотрудник/специалист банка",
+    "bank-manager": "Ответственный сотрудник/руководитель банка"
+  },
+  "credit-status": [
+    "Кредит выдан",
+    "Отказ Клиента",
+    "Отказ Банка",
+    "Возврат",
+    "Одобрено",
+    "Отказ"
+  ],
+  "auth": {
+    "secretKey": "SecretOnlyForEmployees"
+  }
+}

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <style type="text/css">
+    a:hover {
+      color: blue;
+      text-decoration: dashed;
+    }
+  </style>
+  <title>Заявка на кредит</title>
+</head>
+<body>
+<table cellspacing="2" cellpadding="2" border="0"
+       style="border-style: solid; border-width: 1px; font-family: Tahoma, Arial, arial,sans-serif; font-size: 14px; margin: auto auto; max-width: 740px;">
+  <tr>
+    <td colspan="2" align="left">
+      <h2>Кредитная заявка</h2>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%">
+      <b>КОМПАНИЯ ПАРТНЕР ЕОПК:</b>
+    </td>
+    <td>
+      {{tpl.partner}}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <b>ФИО ПОКУПАТЕЛЯ:</b>
+    </td>
+    <td>
+      {{tpl.fio}}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <b>КОНТАКТНЫЙ ТЕЛЕФОН:</b>
+    </td>
+    <td>
+      {{tpl.tel}}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <b>КРЕДИТ ИЛИ РАССРОЧКА?:</b>
+    </td>
+    <td>
+      {{tpl.creditType}}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <b>СУММА:</b>
+    </td>
+    <td>
+      {{tpl.summ}}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <b>ЖЕЛАЕМЫЙ СРОК:</b>
+    </td>
+    <td>
+      {{tpl.period}}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <b>ПЕРВОНАЧАЛЬНЫЙ ВЗНОС:</b>
+    </td>
+    <td>
+      {{tpl.initialFee}}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <b>НАИМЕНОВАНИЕ ТОВАРА:</b>
+    </td>
+    <td>
+      {{tpl.goods}}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <b>Комментарий:</b>
+    </td>
+    <td>
+      {{tpl.comments}}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <b>Положение об обработке персональных данных:</b>
+    </td>
+    <td>
+      {{tpl.PDN}}
+    </td>
+  </tr>
+
+  <tr style="font-size: 12px;">
+    <td colspan="2" align="left">
+      <sub>* Это письмо-подтверждение предназначено для исключения несанкционированного использования вашего адреса
+        электронной почты.<br>Если вы получили это сообщение по ошибке, пожалуйста, сообщите об этом отправителю и
+        удалите
+        это письмо, не делая копий.
+      </sub>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
